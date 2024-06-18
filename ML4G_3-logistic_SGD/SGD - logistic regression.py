@@ -19,7 +19,32 @@ parser.add_argument("--seed", default=42, type=int, help="Random seed")
 parser.add_argument("--test_size", default=0.5, type=lambda x: int(x) if x.isdigit() else float(x), help="Test size")
 # If you add more arguments, ReCodEx will keep them with your default values.
 
+def calculate_loss(data, target, weights):
+	loss = 0
+	for i in range(data.shape[0]):
+		prediction = 1/(1+np.exp(-data[i] @ weights)) 
+		
+		if target[i]==1:
+			loss += - np.log(prediction)
+		else:
+			loss += - np.log(1-prediction)
 
+	loss /= data.shape[0]
+
+	return loss
+
+def calculate_accuracy(data, target, weights):
+	accuracy = 0
+	for i in range(data.shape[0]):
+		prediction = 1/(1+np.exp(-data[i] @ weights))
+
+		if prediction > 0.5:
+			prediction = 1
+		else:
+			prediction = 0
+		if prediction == target[i]:
+			accuracy +=1
+	return accuracy/data.shape[0]
 
 
 
